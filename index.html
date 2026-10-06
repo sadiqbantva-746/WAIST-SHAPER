@@ -514,7 +514,7 @@ document.getElementById('form').onsubmit=e=>{e.preventDefault();
     <div class="orderRef">WAIST SHAPER • Cash on Delivery</div>
     <div class="summaryTitle">Order Summary</div>
     <div class="summaryCard" id="customerOrderSummary"></div>
-    <div class="thankAudio">🔊 Thank you for your order</div><button type="button" class="btn" style="margin:0 auto 16px;display:block;padding:10px 18px;font-size:13px" onclick="speakThankYouFallback()">🔊 HEAR CONFIRMATION</button>
+    <div class="thankAudio">🔊 Thank you for your order</div>
     <button type="button" id="thankYouBack">BACK TO WEBSITE</button>
   </div>
 </div>
@@ -566,7 +566,7 @@ document.getElementById('form').onsubmit=e=>{e.preventDefault();
       try{
         if('speechSynthesis' in window){
           window.speechSynthesis.cancel();
-          const u=new SpeechSynthesisUtterance('Thank you for your order. Your order has been confirmed successfully. We will contact you shortly.');
+          const u=new SpeechSynthesisUtterance('Thank you for your order. Your order has been confirmed successfully. Your order will be delivered within 3 to 5 days.');
           u.lang='en-US';
           u.rate=0.88;
           u.pitch=1;
@@ -645,9 +645,16 @@ document.getElementById('form').onsubmit=e=>{e.preventDefault();
         try{ if('speechSynthesis' in window) window.speechSynthesis.cancel(); }catch(err){}
         thank.classList.remove('show');
         thank.setAttribute('aria-hidden','true');
+        processing.classList.remove('show');
+        processing.setAttribute('aria-hidden','true');
+
+        // Reset the order form completely when returning to the website.
+        form.reset();
+        const colorInputs=form.querySelectorAll('input[name="color"]');
+        colorInputs.forEach(function(input){ input.checked=false; });
+        if(window.closeOrder) window.closeOrder();
         document.documentElement.style.overflow='';
         document.body.style.overflow='';
-        if(window.closeOrder) window.closeOrder();
         window.scrollTo({top:0,behavior:'smooth'});
       });
     }
@@ -694,7 +701,7 @@ function speakThankYouFallback(){
   try{
     if(!('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();
-    const u=new SpeechSynthesisUtterance('Thank you for your order. Your order has been confirmed successfully. We will contact you shortly.');
+    const u=new SpeechSynthesisUtterance('Thank you for your order. Your order has been confirmed successfully. Your order will be delivered within 3 to 5 days.');
     u.lang='en-US'; u.rate=0.88; u.pitch=1;
     window.speechSynthesis.speak(u);
   }catch(e){}
