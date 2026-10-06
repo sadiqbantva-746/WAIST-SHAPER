@@ -574,7 +574,7 @@ window.GOOGLE_SHEET_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwvB9
 
     async function sendOrderToGoogleSheet(){
       const endpoint=window.GOOGLE_SHEET_WEB_APP_URL;
-      if(!endpoint || endpoint.includes('https://script.google.com/macros/s/AKfycbwvB97v4CZAY17oPfb2SQSQsGeAu9GmaqY2hA1w72uQ4rj9eOmrcW4tr2Vc0_k9xukPOw/exec')) return;
+      if(!endpoint || endpoint.includes('PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE')) return;
       const qty=Math.max(1,parseInt(val('qty')||'1',10));
       const unit=1499;
       const delivery=200;
