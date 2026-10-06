@@ -520,6 +520,15 @@ document.getElementById('form').onsubmit=e=>{e.preventDefault();
 </div>
 
 
+<script id="google-sheet-config">
+/*
+  Google Apps Script Web App URL:
+  1) Deploy the Apps Script as a Web app
+  2) Set access to "Anyone"
+  3) Paste the /exec URL below
+*/
+window.GOOGLE_SHEET_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwvB97v4CZAY17oPfb2SQSQsGeAu9GmaqY2hA1w72uQ4rj9eOmrcW4tr2Vc0_k9xukPOw/exec";
+</script>
 <script id="professional-order-submit">
 (function(){
   function initOrderSubmit(){
@@ -561,6 +570,40 @@ document.getElementById('form').onsubmit=e=>{e.preventDefault();
         ['Total Amount',money(total)]
       ];
       summary.innerHTML=rows.map((r,i)=>`<div class="summaryRow ${i===rows.length-1?'total':''}"><span>${r[0]}</span><b>${String(r[1]).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}</b></div>`).join('');
+    }
+
+    async function sendOrderToGoogleSheet(){
+      const endpoint=window.GOOGLE_SHEET_WEB_APP_URL;
+      if(!endpoint || endpoint.includes('https://script.google.com/macros/s/AKfycbwvB97v4CZAY17oPfb2SQSQsGeAu9GmaqY2hA1w72uQ4rj9eOmrcW4tr2Vc0_k9xukPOw/exec')) return;
+      const qty=Math.max(1,parseInt(val('qty')||'1',10));
+      const unit=1499;
+      const delivery=200;
+      const payload={
+        orderDate:new Date().toLocaleString('en-PK',{timeZone:'Asia/Karachi'}),
+        productName:"Women's Adjustable Waist Shaper Belt",
+        fullName:val('name'),
+        mobileNumber:val('phone'),
+        city:val('city'),
+        completeAddress:val('address'),
+        nearestPlace:val('landmark'),
+        color:selectedColor(),
+        quantity:qty,
+        waistSize:val('waistSize'),
+        paymentMethod:"Cash on Delivery",
+        productTotal:unit*qty,
+        deliveryCharges:delivery,
+        totalAmount:(unit*qty)+delivery
+      };
+      try{
+        await fetch(endpoint,{
+          method:'POST',
+          mode:'no-cors',
+          headers:{'Content-Type':'text/plain;charset=utf-8'},
+          body:JSON.stringify(payload)
+        });
+      }catch(err){
+        console.warn('Google Sheet order submission failed:',err);
+      }
     }
 
     let confirmationAudioContext=null;
@@ -648,6 +691,7 @@ document.getElementById('form').onsubmit=e=>{e.preventDefault();
 
       // Prepare mobile-safe confirmation audio directly from the user's Confirm Order tap.
       scheduleConfirmationAudio();
+      sendOrderToGoogleSheet();
 
       buildSummary();
       if(document.activeElement && document.activeElement.blur) document.activeElement.blur();
