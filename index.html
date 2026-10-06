@@ -364,8 +364,8 @@
       </select>
     </div>
     <div>
-      <label>PAYMENT</label>
-      <input value="Cash on Delivery" readonly>
+      <label>WAIST SIZE *</label>
+      <input id="waistSize" required inputmode="decimal" placeholder="Enter waist size (e.g. 32 inches)">
     </div>
   </div>
 
@@ -511,7 +511,7 @@ document.getElementById('form').onsubmit=e=>{e.preventDefault();
     <div class="check">✓</div>
     <h2>Thank You!</h2>
     <p>Your order has been received successfully.<br>Our team will contact you shortly to confirm your order.</p>
-    <div class="orderRef">WOMEN'S ADJUSTABLE WAIST SHAPER • Cash on Delivery</div>
+    <div class="orderRef">WOMEN'S ADJUSTABLE WAIST SHAPER • COD</div>
     <div class="summaryTitle">Order Summary</div>
     <div class="summaryCard" id="customerOrderSummary"></div>
     <div class="thankAudio">🔊 Thank you for your order</div>
@@ -554,7 +554,8 @@ document.getElementById('form').onsubmit=e=>{e.preventDefault();
         ['Nearest Place / Landmark',val('landmark')],
         ['Color',selectedColor()],
         ['Quantity',qty + (qty===1 ? ' Piece' : ' Pieces')],
-        ['Payment','Cash on Delivery'],
+        ['Waist Size',val('waistSize')],
+        ['Payment Method','Cash on Delivery'],
         ['Product Total',money(productTotal)],
         ['Delivery Charges',money(delivery)],
         ['Total Amount',money(total)]
