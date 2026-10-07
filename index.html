@@ -309,6 +309,24 @@
 }
 </style>
 
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1437404378348586');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=1437404378348586&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+
 </head><body>
 <div class="top">🚚 CASH ON DELIVERY &nbsp; • &nbsp; FAST DELIVERY &nbsp; • &nbsp; EASY ORDER PROCESS</div>
 <nav class="nav"><div class="brand">BIG BLUE FASHION<small>WOMEN'S EVERYDAY ESSENTIALS</small></div><div class="links"><a href="#details">DETAILS</a><a href="#benefits">BENEFITS</a><a href="#reviews">REVIEWS</a></div><button class="btn" onclick="openOrder()">ORDER NOW</button></nav>
@@ -666,6 +684,23 @@ window.GOOGLE_SHEET_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwvB9
       }catch(err){ return false; }
     }
 
+    let purchaseTracked=false;
+    function trackPurchase(){
+      if(purchaseTracked) return;
+      if(typeof window.fbq !== 'function') return;
+      const qty=Math.max(1,parseInt(val('qty')||'1',10));
+      const value=(1499*qty)+200;
+      purchaseTracked=true;
+      window.fbq('track','Purchase',{
+        value:value,
+        currency:'PKR',
+        content_name:"Women's Adjustable Waist Shaper Belt",
+        content_type:'product',
+        content_ids:['WAIST-SHAPER'],
+        num_items:qty
+      });
+    }
+
     form.addEventListener('submit', function(e){
       e.preventDefault();
       e.stopImmediatePropagation();
@@ -715,6 +750,9 @@ window.GOOGLE_SHEET_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwvB9
           processing.setAttribute('aria-hidden','true');
           thank.classList.add('show');
           thank.setAttribute('aria-hidden','false');
+
+          // Fire Meta Purchase only after the customer reaches the Thank You page.
+          trackPurchase();
         }
       },1000);
     }, true);
